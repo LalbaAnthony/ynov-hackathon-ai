@@ -3,6 +3,8 @@
 Site entièrement vibe-codé avec Claude/GPT/Cursor en respect des consignes du hackathon Ynov AI 2025.
 Les liens vers les ressources et les données sont fictifs et à titre d'exemple.
 
+<img src="docs/screenshot-site.png" alt="Capture d'écran du site web Récifs Vivants" width="800">
+
 ## 🌊 Présentation du Projet
 
 > **"Les coraux vont mieux, un peu grâce à toi"**
