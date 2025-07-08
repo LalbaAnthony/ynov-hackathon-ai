@@ -124,3 +124,72 @@ const statsSection = document.querySelector('.statistics');
 if (statsSection) {
     statsObserver.observe(statsSection);
 }
+
+// Diaporama automatique pour la section restoration-visual
+(function() {
+    const container = document.querySelector('.restoration-visual.slideshow-container');
+    if (!container) return;
+    const slides = Array.from(container.querySelectorAll('.slide'));
+    let current = 0;
+    let timer = null;
+    let started = false;
+    let observer = null;
+
+    function showSlide(idx) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === idx);
+        });
+    }
+
+    function nextSlide() {
+        // Si on passe à la vidéo, on attend la fin de la vidéo
+        if (slides[current].classList.contains('video-slide')) {
+            const video = slides[current].querySelector('video');
+            if (video) {
+                video.currentTime = 0;
+                video.play();
+                video.onended = () => {
+                    advance();
+                };
+                return;
+            }
+        }
+        // Sinon, timer classique (10s pour images fixes)
+        timer = setTimeout(advance, 10000);
+    }
+
+    function advance() {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+        nextSlide();
+    }
+
+    function startSlideshow() {
+        if (started) return;
+        started = true;
+        showSlide(current);
+        nextSlide();
+    }
+
+    function stopSlideshow() {
+        started = false;
+        if (timer) clearTimeout(timer);
+        // Pause la vidéo si elle est en cours
+        if (slides[current].classList.contains('video-slide')) {
+            const video = slides[current].querySelector('video');
+            if (video) video.pause();
+        }
+    }
+
+    // Observer pour démarrer/arrêter le diapo selon visibilité
+    observer = new window.IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startSlideshow();
+            } else {
+                stopSlideshow();
+            }
+        });
+    }, { threshold: 0.3 });
+    observer.observe(container);
+})();
